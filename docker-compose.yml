@@ -1,13 +1,16 @@
-version: "3.3"
+version: "3"
 
 services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.app
     ports:
       - '8000:8000'
   prometheus:
+    build:
+      context: .
+      dockerfile: Dockerfile.prometheus
     image: prom/prometheus:latest
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
@@ -16,6 +19,9 @@ services:
     ports:
       - '9090:9090'
   grafana:
+    build:
+      context: .
+      dockerfile: Dockerfile.grafana
     image: grafana/grafana:latest
     container_name: monitoring_grafana
     restart: unless-stopped
@@ -24,7 +30,7 @@ services:
     volumes:
       - ./data/grafana:/var/lib/grafana
     ports:
-      - '3000:3000'
+      - '4000:3000'
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
     container_name: cadvisor
@@ -42,3 +48,12 @@ services:
     container_name: redis
     ports:
     - 6379:6379
+  blackbox_exporter:
+    build:
+      context: .
+      dockerfile: Dockerfile.blackbox_exporter
+    image: prom/blackbox-exporter:latest
+    ports:
+      - "9115:9115"
+    volumes:
+      - ./blackbox.yml:/etc/blackbox_exporter/config.yml

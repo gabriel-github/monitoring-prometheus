@@ -1,0 +1,5 @@
+# Use a imagem oficial do Blackbox Exporter
+FROM prom/blackbox-exporter:latest
+
+# Copie o arquivo de configuração do Blackbox Exporter para dentro do contêiner
+COPY blackbox.yml /etc/blackbox_exporter/config.yml
